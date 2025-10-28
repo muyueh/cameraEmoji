@@ -1,30 +1,16 @@
 # Camera Emoji
 
-A lightweight GitHub Pages experience that pairs your live webcam expression with the emoji that best matches it. Powered by [face-api.js](https://github.com/justadudewhohacks/face-api.js).
+This version of Camera Emoji focuses exclusively on the foundation: getting a reliable webcam preview running in the browser. Once the live feed is stable we can iterate on face analysis and emoji mapping.
 
 ## Live demo
 
-Once published with GitHub Pages the site will be available at `https://<your-username>.github.io/cameraEmoji/`.
+When published with GitHub Pages the site will be available at `https://<your-username>.github.io/cameraEmoji/`.
 
 ## Development
 
-1. Serve the project locally (any static file server works, e.g. `npx serve .`).
-2. Open the page in your browser and allow webcam access.
-3. Try different expressions and watch the emoji update in real-time.
+1. Serve the project locally with any static file server (for example, `npx serve .`).
+2. Open the page in your browser.
+3. Grant the tab permission to use your webcam when prompted.
+4. Use the Start/Stop buttons to control the stream and confirm the preview works.
 
-## Facial expressions reference
-
-The app highlights seven expressions detected by the model, and the page lists ten common expressions with representative emojis:
-
-| Expression        | Emoji |
-| ----------------- | ----- |
-| Happy / Joyful    | 😀    |
-| Sad / Tearful     | 😢    |
-| Angry / Annoyed   | 😠    |
-| Surprised / Amazed| 😮    |
-| Afraid / Scared   | 😨    |
-| Disgusted / Grossed Out | 🤢 |
-| Neutral / Calm    | 😐    |
-| Thinking / Puzzled| 🤔    |
-| Sleepy / Tired    | 😴    |
-| In Love / Adoring | 😍    |
+If your browser blocks the webcam, check its site permissions and try again.

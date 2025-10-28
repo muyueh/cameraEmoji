@@ -1,135 +1,98 @@
-function ensureFaceApi() {
-  if (typeof window === 'undefined' || !window.faceapi) {
-    throw new Error('face-api.js library failed to load.');
-  }
-
-  return window.faceapi;
-}
-
-const faceapi = ensureFaceApi();
-
 const video = document.getElementById('video');
-const canvas = document.getElementById('overlay');
-const loadingStatus = document.getElementById('loading');
-const permissionStatus = document.getElementById('permission');
-const emojiDisplay = document.getElementById('emoji');
-const expressionText = document.getElementById('expression');
-const confidenceText = document.getElementById('confidence');
+const statusBanner = document.getElementById('status');
+const startButton = document.getElementById('startButton');
+const stopButton = document.getElementById('stopButton');
 
-const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.16/model';
+let currentStream = null;
 
-function ensureFaceApi() {
-  if (window.faceapi) {
-    return window.faceapi;
+function setStatus(message, { hidden = false, isError = false } = {}) {
+  if (!statusBanner) {
+    return;
   }
 
-  throw new Error('face-api.js library failed to load.');
+  statusBanner.textContent = message;
+  statusBanner.classList.toggle('hidden', hidden);
+  statusBanner.classList.toggle('error', isError);
 }
 
-const expressionEmojiMap = {
-  neutral: { label: 'Neutral', emoji: '😐' },
-  happy: { label: 'Happy', emoji: '😀' },
-  sad: { label: 'Sad', emoji: '😢' },
-  angry: { label: 'Angry', emoji: '😠' },
-  fearful: { label: 'Fearful', emoji: '😨' },
-  disgusted: { label: 'Disgusted', emoji: '🤢' },
-  surprised: { label: 'Surprised', emoji: '😮' }
-};
-
-async function loadModels(faceapi) {
-  await Promise.all([
-    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-    faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL)
-  ]);
-}
-
-async function init() {
-  try {
-    const faceapi = ensureFaceApi();
-    await loadModels(faceapi);
-    loadingStatus.classList.add('hidden');
-    await startVideo();
-  } catch (error) {
-    loadingStatus.textContent =
-      error.message === 'face-api.js library failed to load.'
-        ? 'Unable to load the face detection library.'
-        : 'Unable to load the face analysis models.';
-    console.error(error);
+function ensureMediaDevicesSupport() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    setStatus('This browser does not support camera access.', {
+      hidden: false,
+      isError: true
+    });
+    startButton.disabled = true;
+    return false;
   }
+
+  return true;
 }
 
-async function startVideo() {
+async function startCamera() {
+  if (currentStream) {
+    return;
+  }
+
+  if (!ensureMediaDevicesSupport()) {
+    return;
+  }
+
+  setStatus('Requesting camera access…', { hidden: false, isError: false });
+  startButton.disabled = true;
+
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    permissionStatus.classList.add('hidden');
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user' },
+      audio: false
+    });
+
+    currentStream = stream;
     video.srcObject = stream;
+    stopButton.disabled = false;
   } catch (error) {
-    loadingStatus.classList.add('hidden');
-    permissionStatus.classList.remove('hidden');
-    expressionText.textContent = 'Camera access denied';
-    confidenceText.textContent = '';
-    console.error('Camera permission denied', error);
+    console.error('Unable to start the camera stream.', error);
+    const reason =
+      error?.name === 'NotAllowedError'
+        ? 'Camera access was denied.'
+        : 'Could not access the webcam.';
+
+    setStatus(`${reason} Please check your browser permissions and try again.`, {
+      hidden: false,
+      isError: true
+    });
+    startButton.disabled = false;
   }
 }
 
-video.addEventListener('loadedmetadata', () => {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-});
+function stopCamera() {
+  if (!currentStream) {
+    return;
+  }
 
-video.addEventListener('play', () => {
-  const faceapi = ensureFaceApi();
-  const displaySize = { width: video.videoWidth, height: video.videoHeight };
-  faceapi.matchDimensions(canvas, displaySize);
+  currentStream.getTracks().forEach((track) => track.stop());
+  currentStream = null;
+  video.srcObject = null;
 
-  const detectorOptions = new faceapi.TinyFaceDetectorOptions({
-    inputSize: 224,
-    scoreThreshold: 0.5
+  setStatus('Camera stopped. Press “Start camera” to resume.', {
+    hidden: false,
+    isError: false
   });
 
-  const detectionLoop = async () => {
-    if (video.paused || video.ended) {
-      return;
-    }
+  stopButton.disabled = true;
+  startButton.disabled = false;
+}
 
-    const result = await faceapi
-      .detectSingleFace(video, detectorOptions)
-      .withFaceExpressions();
-
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (result) {
-      const resizedDetections = faceapi.resizeResults(result, displaySize);
-      faceapi.draw.drawDetections(canvas, resizedDetections);
-
-      const expressions = resizedDetections.expressions;
-      const [topExpression, probability] = Object.entries(expressions).reduce(
-        (best, current) => (current[1] > best[1] ? current : best),
-        ['', 0]
-      );
-
-      if (topExpression && expressionEmojiMap[topExpression]) {
-        const { label, emoji } = expressionEmojiMap[topExpression];
-        emojiDisplay.textContent = emoji;
-        emojiDisplay.style.transform = 'scale(1.08)';
-        requestAnimationFrame(() => {
-          emojiDisplay.style.transform = 'scale(1)';
-        });
-        expressionText.textContent = label;
-        confidenceText.textContent = `Confidence: ${(probability * 100).toFixed(
-          1
-        )}%`;
-      }
-    } else {
-      expressionText.textContent = 'Face not detected';
-      confidenceText.textContent = '';
-    }
-
-    setTimeout(detectionLoop, 200);
-  };
-
-  detectionLoop();
+video.addEventListener('playing', () => {
+  setStatus('', { hidden: true });
 });
 
-init();
+startButton.addEventListener('click', () => {
+  startCamera();
+});
+
+stopButton.addEventListener('click', () => {
+  stopCamera();
+});
+
+// Attempt to start the camera automatically on load.
+startCamera();
