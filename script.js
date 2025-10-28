@@ -1,3 +1,13 @@
+function ensureFaceApi() {
+  if (typeof window === 'undefined' || !window.faceapi) {
+    throw new Error('face-api.js library failed to load.');
+  }
+
+  return window.faceapi;
+}
+
+const faceapi = ensureFaceApi();
+
 const video = document.getElementById('video');
 const canvas = document.getElementById('overlay');
 const loadingStatus = document.getElementById('loading');
@@ -6,7 +16,7 @@ const emojiDisplay = document.getElementById('emoji');
 const expressionText = document.getElementById('expression');
 const confidenceText = document.getElementById('confidence');
 
-const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
+const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.16/model';
 
 const expressionEmojiMap = {
   neutral: { label: 'Neutral', emoji: '😐' },
