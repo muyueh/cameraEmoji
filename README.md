@@ -1,30 +1,17 @@
 # Camera Emoji
 
-A lightweight GitHub Pages experience that pairs your live webcam expression with the emoji that best matches it. Powered by [face-api.js](https://github.com/justadudewhohacks/face-api.js).
+Camera Emoji now pairs the live webcam preview with lightweight, in-browser emotion detection powered by [`face-api.js`](https://github.com/justadudewhohacks/face-api.js). The app asks for camera access, streams the video feed, and overlays the most confident facial expression label and emoji.
 
 ## Live demo
 
-Once published with GitHub Pages the site will be available at `https://<your-username>.github.io/cameraEmoji/`.
+When published with GitHub Pages the site will be available at `https://<your-username>.github.io/cameraEmoji/`.
 
 ## Development
 
-1. Serve the project locally (any static file server works, e.g. `npx serve .`).
-2. Open the page in your browser and allow webcam access.
-3. Try different expressions and watch the emoji update in real-time.
+1. Serve the project locally with any static file server (for example, `npx serve .`).
+2. Open the page in your browser.
+3. Grant the tab permission to use your webcam when prompted.
+4. Wait for the expression model to finish loading (status banner disappears once ready).
+5. Keep your face inside the frame to see the detected expression update in real time.
 
-## Facial expressions reference
-
-The app highlights seven expressions detected by the model, and the page lists ten common expressions with representative emojis:
-
-| Expression        | Emoji |
-| ----------------- | ----- |
-| Happy / Joyful    | 😀    |
-| Sad / Tearful     | 😢    |
-| Angry / Annoyed   | 😠    |
-| Surprised / Amazed| 😮    |
-| Afraid / Scared   | 😨    |
-| Disgusted / Grossed Out | 🤢 |
-| Neutral / Calm    | 😐    |
-| Thinking / Puzzled| 🤔    |
-| Sleepy / Tired    | 😴    |
-| In Love / Adoring | 😍    |
+If your browser blocks the webcam, check its site permissions and try again. The expression model files are fetched from the jsDelivr CDN, so you also need a network connection when the page loads for the first time.

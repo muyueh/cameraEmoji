@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Camera Emoji - Facial Expression to Emoji</title>
+    <title>Camera Emoji - Emotion Preview</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,88 +15,51 @@
   <body>
     <header>
       <h1>Camera Emoji</h1>
-      <p>Let your webcam pick the emoji that matches your facial expression.</p>
+      <p>See a live preview and get a quick read on your facial expression.</p>
     </header>
 
     <main>
       <section class="app">
         <div class="video-wrapper">
-          <video id="video" autoplay muted playsinline></video>
-          <canvas id="overlay"></canvas>
-          <div id="loading" class="status">Loading face analysis models…</div>
-          <div id="permission" class="status hidden">
-            Please allow camera access to start detecting your expression.
+          <video id="video" autoplay playsinline muted></video>
+          <div id="status" class="status">Requesting camera access…</div>
+          <div class="emotion-pill" id="emotionPill" aria-live="polite">
+            <span id="emotionEmoji" class="emotion-emoji" role="img" aria-hidden="true">😊</span>
+            <span id="emotionLabel" class="emotion-label">Waiting for face…</span>
           </div>
         </div>
-        <div class="result">
-          <div class="emoji" id="emoji" aria-live="polite">🙂</div>
-          <p id="expression" class="expression">Waiting for you…</p>
-          <p id="confidence" class="confidence"></p>
+        <div class="controls">
+          <button id="startButton" type="button">Start camera</button>
+          <button id="stopButton" type="button" disabled>Stop camera</button>
         </div>
       </section>
 
       <section class="instructions">
-        <h2>How it works</h2>
+        <h2>Using the emotion preview</h2>
         <ol>
-          <li>Allow the page to access your webcam.</li>
-          <li>Face the camera and try different expressions.</li>
+          <li>Grant the browser permission to use your webcam.</li>
           <li>
-            The app analyses your face and updates the emoji that best matches
-            what it sees.
+            Keep your face within the frame. When the model finds you, the label
+            updates to the most confident expression.
+          </li>
+          <li>
+            Lighting and positioning matter. If the label feels off, try moving
+            closer or adjusting the light.
           </li>
         </ol>
-      </section>
-
-      <section class="expressions">
-        <h2>Common facial expressions &amp; emojis</h2>
-        <p>
-          These are some of the expressions people often make and the emojis
-          commonly used to represent them.
-        </p>
-        <div class="expression-grid">
-          <div class="expression-card"><span>😀</span><p>Happy / Joyful</p></div>
-          <div class="expression-card"><span>😢</span><p>Sad / Tearful</p></div>
-          <div class="expression-card"><span>😠</span><p>Angry / Annoyed</p></div>
-          <div class="expression-card"><span>😮</span><p>Surprised / Amazed</p></div>
-          <div class="expression-card"><span>😨</span><p>Afraid / Scared</p></div>
-          <div class="expression-card"><span>🤢</span><p>Disgusted / Grossed Out</p></div>
-          <div class="expression-card"><span>😐</span><p>Neutral / Calm</p></div>
-          <div class="expression-card"><span>🤔</span><p>Thinking / Puzzled</p></div>
-          <div class="expression-card"><span>😴</span><p>Sleepy / Tired</p></div>
-          <div class="expression-card"><span>😍</span><p>In Love / Adoring</p></div>
-        </div>
       </section>
     </main>
 
     <footer>
-      <p>
-        Built with
-        <a href="https://github.com/justadudewhohacks/face-api.js" target="_blank" rel="noopener noreferrer"
-          >face-api.js</a
-        >.
-      </p>
+      <p>Need help? Check your browser settings for camera permissions.</p>
     </footer>
 
-    <script type="module">
-      async function bootstrap() {
-        try {
-          const faceApiModule = await import(
-            'https://esm.sh/@vladmandic/face-api@1.7.16'
-          );
-          const faceapi =
-            faceApiModule.faceapi || faceApiModule.default || faceApiModule;
-          window.faceapi = faceapi;
-          await import('./script.js');
-        } catch (error) {
-          console.error('Unable to load the face-api.js library.', error);
-          const loadingStatus = document.getElementById('loading');
-          if (loadingStatus) {
-            loadingStatus.textContent = 'Unable to load the face analysis library.';
-          }
-        }
-      }
-
-      bootstrap();
-    </script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"
+      integrity="sha384-IJOcQmoqjDY5g7jzjxcW0kOvXPt+LjGB0vN1wM1fj9oDkPmU9NS5IL+xipsbr3zK"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
