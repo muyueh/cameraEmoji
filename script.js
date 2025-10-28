@@ -1,3 +1,13 @@
+function ensureFaceApi() {
+  if (typeof window === 'undefined' || !window.faceapi) {
+    throw new Error('face-api.js library failed to load.');
+  }
+
+  return window.faceapi;
+}
+
+const faceapi = ensureFaceApi();
+
 const video = document.getElementById('video');
 const canvas = document.getElementById('overlay');
 const loadingStatus = document.getElementById('loading');

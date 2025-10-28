@@ -77,11 +77,25 @@
       </p>
     </footer>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.16/dist/face-api.min.js"
-      integrity="sha256-LGGBcNlDrluv9vXBxvzasFawLFj2GpKsKtt9+tTo1PI="
-      crossorigin="anonymous"
-    ></script>
-    <script src="script.js"></script>
+    <script type="module">
+      async function bootstrap() {
+        try {
+          const faceApiModule = await import(
+            'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.16/dist/face-api.esm.js'
+          );
+          const faceapi = faceApiModule.faceapi || faceApiModule.default || faceApiModule;
+          window.faceapi = faceapi;
+          await import('./script.js');
+        } catch (error) {
+          console.error('Unable to load the face-api.js library.', error);
+          const loadingStatus = document.getElementById('loading');
+          if (loadingStatus) {
+            loadingStatus.textContent = 'Unable to load the face analysis library.';
+          }
+        }
+      }
+
+      bootstrap();
+    </script>
   </body>
 </html>
