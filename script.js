@@ -8,6 +8,14 @@ const confidenceText = document.getElementById('confidence');
 
 const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
 
+function ensureFaceApi() {
+  if (window.faceapi) {
+    return window.faceapi;
+  }
+
+  throw new Error('face-api.js library failed to load.');
+}
+
 const expressionEmojiMap = {
   neutral: { label: 'Neutral', emoji: '😐' },
   happy: { label: 'Happy', emoji: '😀' },
@@ -18,7 +26,7 @@ const expressionEmojiMap = {
   surprised: { label: 'Surprised', emoji: '😮' }
 };
 
-async function loadModels() {
+async function loadModels(faceapi) {
   await Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
     faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL)
@@ -27,11 +35,15 @@ async function loadModels() {
 
 async function init() {
   try {
-    await loadModels();
+    const faceapi = ensureFaceApi();
+    await loadModels(faceapi);
     loadingStatus.classList.add('hidden');
     await startVideo();
   } catch (error) {
-    loadingStatus.textContent = 'Unable to load the face analysis models.';
+    loadingStatus.textContent =
+      error.message === 'face-api.js library failed to load.'
+        ? 'Unable to load the face detection library.'
+        : 'Unable to load the face analysis models.';
     console.error(error);
   }
 }
@@ -56,6 +68,7 @@ video.addEventListener('loadedmetadata', () => {
 });
 
 video.addEventListener('play', () => {
+  const faceapi = ensureFaceApi();
   const displaySize = { width: video.videoWidth, height: video.videoHeight };
   faceapi.matchDimensions(canvas, displaySize);
 
