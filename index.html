@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Camera Emoji - Facial Expression to Emoji</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Camera Emoji</h1>
+      <p>Let your webcam pick the emoji that matches your facial expression.</p>
+    </header>
+
+    <main>
+      <section class="app">
+        <div class="video-wrapper">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="overlay"></canvas>
+          <div id="loading" class="status">Loading face analysis models…</div>
+          <div id="permission" class="status hidden">
+            Please allow camera access to start detecting your expression.
+          </div>
+        </div>
+        <div class="result">
+          <div class="emoji" id="emoji" aria-live="polite">🙂</div>
+          <p id="expression" class="expression">Waiting for you…</p>
+          <p id="confidence" class="confidence"></p>
+        </div>
+      </section>
+
+      <section class="instructions">
+        <h2>How it works</h2>
+        <ol>
+          <li>Allow the page to access your webcam.</li>
+          <li>Face the camera and try different expressions.</li>
+          <li>
+            The app analyses your face and updates the emoji that best matches
+            what it sees.
+          </li>
+        </ol>
+      </section>
+
+      <section class="expressions">
+        <h2>Common facial expressions &amp; emojis</h2>
+        <p>
+          These are some of the expressions people often make and the emojis
+          commonly used to represent them.
+        </p>
+        <div class="expression-grid">
+          <div class="expression-card"><span>😀</span><p>Happy / Joyful</p></div>
+          <div class="expression-card"><span>😢</span><p>Sad / Tearful</p></div>
+          <div class="expression-card"><span>😠</span><p>Angry / Annoyed</p></div>
+          <div class="expression-card"><span>😮</span><p>Surprised / Amazed</p></div>
+          <div class="expression-card"><span>😨</span><p>Afraid / Scared</p></div>
+          <div class="expression-card"><span>🤢</span><p>Disgusted / Grossed Out</p></div>
+          <div class="expression-card"><span>😐</span><p>Neutral / Calm</p></div>
+          <div class="expression-card"><span>🤔</span><p>Thinking / Puzzled</p></div>
+          <div class="expression-card"><span>😴</span><p>Sleepy / Tired</p></div>
+          <div class="expression-card"><span>😍</span><p>In Love / Adoring</p></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Built with
+        <a href="https://github.com/justadudewhohacks/face-api.js" target="_blank" rel="noopener noreferrer"
+          >face-api.js</a
+        >.
+      </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" integrity="sha256-6pAo0P5NdVs4KJIp4jOSAmhpN6wX+ZspGDZCBoBPuiY=" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
