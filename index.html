@@ -81,9 +81,10 @@
       async function bootstrap() {
         try {
           const faceApiModule = await import(
-            'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.16/+esm'
+            'https://esm.sh/@vladmandic/face-api@1.7.16'
           );
-          const faceapi = faceApiModule.faceapi || faceApiModule.default || faceApiModule;
+          const faceapi =
+            faceApiModule.faceapi || faceApiModule.default || faceApiModule;
           window.faceapi = faceapi;
           await import('./script.js');
         } catch (error) {
