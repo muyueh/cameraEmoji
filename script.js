@@ -12,7 +12,7 @@ let detectionFrameId = null;
 let modelsLoaded = false;
 let modelsLoadingPromise = null;
 
-const MODEL_URL = './weights';
+const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
 
 const EXPRESSION_EMOJI = {
   neutral: '😐',
@@ -68,7 +68,7 @@ function updateEmotion(expression, confidence) {
 
 function ensureFaceApiAvailable() {
   if (typeof faceapi === 'undefined') {
-    setStatus('The expression library failed to load. Make sure vendor/face-api.min.js is available and reload the page.', {
+    setStatus('The expression library failed to load. Check your network connection and reload the page.', {
       hidden: false,
       isError: true
     });
