@@ -14,4 +14,19 @@ When published with GitHub Pages the site will be available at `https://<your-us
 4. Wait for the expression model to finish loading (status banner disappears once ready).
 5. Keep your face inside the frame to see the detected expression update in real time.
 
-If your browser blocks the webcam, check its site permissions and try again. The expression model files are fetched from the jsDelivr CDN, so you also need a network connection when the page loads for the first time.
+If your browser blocks the webcam, check its site permissions and try again.
+
+## Mirroring face-api.js locally
+
+The project now ships with a helper script that mirrors the browser bundle and
+required weight files so you can run everything from local assets instead of
+the jsDelivr CDN.
+
+```bash
+node scripts/mirror-face-api.js
+```
+
+Running the script downloads `vendor/face-api.min.js` and the manifests and
+shards required for the Tiny Face Detector and Face Expression models into the
+`weights/` directory. Commit those files or keep them in place locally so the UI
+can start without any external network access.
