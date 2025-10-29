@@ -14,4 +14,5 @@ When published with GitHub Pages the site will be available at `https://<your-us
 4. Wait for the expression model to finish loading (status banner disappears once ready).
 5. Keep your face inside the frame to see the detected expression update in real time.
 
-If your browser blocks the webcam, check its site permissions and try again. The expression model files are fetched from the jsDelivr CDN, so you also need a network connection when the page loads for the first time.
+If your browser blocks the webcam, check its site permissions and try again.
+
