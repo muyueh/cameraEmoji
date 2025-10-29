@@ -105,6 +105,10 @@ video {
   backdrop-filter: blur(6px);
 }
 
+.emotion-pill.loading {
+  background: rgba(93, 95, 239, 0.75);
+}
+
 .emotion-pill.missing {
   background: rgba(71, 85, 105, 0.85);
 }
