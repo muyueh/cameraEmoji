@@ -43,6 +43,18 @@ function resetEmotionPill() {
   emotionEmoji.textContent = '😊';
   emotionLabel.textContent = 'Waiting for face…';
   emotionPill?.classList.remove('missing');
+  emotionPill?.classList.remove('loading');
+}
+
+function showLoadingEmotionState() {
+  if (!emotionLabel || !emotionEmoji) {
+    return;
+  }
+
+  emotionEmoji.textContent = '⌛';
+  emotionLabel.textContent = 'Detecting emotion…';
+  emotionPill?.classList.add('loading');
+  emotionPill?.classList.remove('missing');
 }
 
 function updateEmotion(expression, confidence) {
@@ -54,6 +66,7 @@ function updateEmotion(expression, confidence) {
     emotionEmoji.textContent = '👀';
     emotionLabel.textContent = 'No face detected';
     emotionPill?.classList.add('missing');
+    emotionPill?.classList.remove('loading');
     return;
   }
 
@@ -65,6 +78,7 @@ function updateEmotion(expression, confidence) {
     ? `${expression[0].toUpperCase()}${expression.slice(1)} · ${percent}%`
     : `${expression[0].toUpperCase()}${expression.slice(1)}`;
   emotionPill?.classList.remove('missing');
+  emotionPill?.classList.remove('loading');
 }
 
 function ensureFaceApiAvailable() {
@@ -175,6 +189,7 @@ async function startEmotionDetection() {
 
   detectionActive = true;
   setStatus('Loading expression model…', { hidden: false, isError: false });
+  showLoadingEmotionState();
 
   try {
     await loadModels();
