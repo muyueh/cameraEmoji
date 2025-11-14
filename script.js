@@ -9,6 +9,10 @@ const FACE_API_CDN_SRC =
   'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
 const MODEL_LOCAL_BASE = 'vendor/face-api/models';
 const MODEL_CDN_BASE = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
+const MODEL_MANIFESTS = [
+  'tiny_face_detector_model-weights_manifest.json',
+  'face_expression_model-weights_manifest.json'
+];
 
 let currentStream = null;
 let detectionActive = false;
@@ -87,6 +91,29 @@ function loadModelsFrom(baseUrl) {
   ]);
 }
 
+async function isLocalModelBundleAvailable() {
+  const normalizedBase = MODEL_LOCAL_BASE.replace(/\/$/, '');
+  try {
+    await Promise.all(
+      MODEL_MANIFESTS.map((manifest) => {
+        const url = `${normalizedBase}/${manifest}`;
+        return fetch(url, {
+          method: 'HEAD',
+          cache: 'no-store'
+        }).then((response) => {
+          if (!response.ok) {
+            throw new Error(`Missing manifest: ${manifest}`);
+          }
+        });
+      })
+    );
+    return true;
+  } catch (error) {
+    console.log('[cameraEmoji] Local model bundle not detected, using CDN weights.');
+    return false;
+  }
+}
+
 const EXPRESSION_TO_EMOJI = {
   neutral: '😐',
   happy: '😄',
@@ -135,10 +162,13 @@ async function ensureModelsLoaded() {
   setStatus('Loading face detection models…', { hidden: false, isError: false });
 
   modelLoadPromise = (async () => {
-    const sources = [
-      { baseUrl: MODEL_LOCAL_BASE, label: 'local bundle' },
-      { baseUrl: MODEL_CDN_BASE, label: 'CDN' }
-    ];
+    const sources = [];
+
+    if (await isLocalModelBundleAvailable()) {
+      sources.push({ baseUrl: MODEL_LOCAL_BASE, label: 'local bundle' });
+    }
+
+    sources.push({ baseUrl: MODEL_CDN_BASE, label: 'CDN' });
 
     let lastError = null;
 

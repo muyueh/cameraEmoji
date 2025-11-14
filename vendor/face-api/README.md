@@ -3,7 +3,9 @@
 This directory is intentionally kept in the repository so you can optionally host
 face-api.js and its model weights locally. The optional assets are listed in
 `.gitignore`, so you can download them for local testing without accidentally
-committing the large binary blobs that the classroom environment rejects.
+committing the large binary blobs that the classroom environment rejects. The
+application automatically falls back to the official jsDelivr CDN when these
+files are absent, so you never need to check them in to the repository.
 
 If you want to serve the assets from disk instead of the CDN fallback used by the
 app, download the following files from the face-api.js v0.22.2 release and place
