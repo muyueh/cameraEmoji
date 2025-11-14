@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Camera Emoji - Webcam Preview</title>
+    <title>Camera Emoji - Expression Emoji</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +15,7 @@
   <body>
     <header>
       <h1>Camera Emoji</h1>
-      <p>First step: make sure your webcam stream works reliably.</p>
+      <p>Let the app read your expression and mirror it with an emoji.</p>
     </header>
 
     <main>
@@ -23,6 +23,10 @@
         <div class="video-wrapper">
           <video id="video" autoplay playsinline muted></video>
           <div id="status" class="status">Requesting camera access…</div>
+          <div class="overlay">
+            <div class="emoji-display" id="emojiDisplay" aria-live="polite">😐</div>
+            <p class="expression" id="expressionText">Waiting for face…</p>
+          </div>
         </div>
         <div class="controls">
           <button id="startButton" type="button">Start camera</button>
@@ -31,25 +35,28 @@
       </section>
 
       <section class="instructions">
-        <h2>Using the preview</h2>
+        <h2>How it works</h2>
         <ol>
           <li>Grant the browser permission to use your webcam.</li>
-          <li>
-            If the preview freezes or you revoke access, use the buttons above to
-            restart the stream.
-          </li>
-          <li>
-            Once the camera feed is working, we can layer facial expression
-            features on top in the future.
-          </li>
+          <li>Look into the camera and keep your face inside the frame.</li>
+          <li>The app analyses your expression locally and updates the emoji.</li>
         </ol>
       </section>
     </main>
 
     <footer>
-      <p>Need help? Check your browser settings for camera permissions.</p>
+      <p>
+        Need help? Check your browser settings for camera permissions. The
+        analysis runs entirely in your browser.
+      </p>
     </footer>
 
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"
+      integrity="sha256-rATmNcnKrvkXZraDZQM0a3A63KmrEl5urJWItgrIZzI="
+      crossorigin="anonymous"
+    ></script>
     <script type="module" src="script.js"></script>
   </body>
 </html>
