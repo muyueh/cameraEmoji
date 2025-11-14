@@ -3,6 +3,8 @@ const statusBanner = document.getElementById('status');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 
+console.log('[cameraEmoji] App booting. faceapi loaded:', typeof window?.faceapi !== 'undefined');
+
 let currentStream = null;
 
 function setStatus(message, { hidden = false, isError = false } = {}) {
@@ -17,6 +19,7 @@ function setStatus(message, { hidden = false, isError = false } = {}) {
 
 function ensureMediaDevicesSupport() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    console.warn('[cameraEmoji] MediaDevices API unavailable.');
     setStatus('This browser does not support camera access.', {
       hidden: false,
       isError: true
@@ -30,13 +33,16 @@ function ensureMediaDevicesSupport() {
 
 async function startCamera() {
   if (currentStream) {
+    console.log('[cameraEmoji] startCamera called but stream already active.');
     return;
   }
 
   if (!ensureMediaDevicesSupport()) {
+    console.log('[cameraEmoji] startCamera aborted: media devices unsupported.');
     return;
   }
 
+  console.log('[cameraEmoji] Requesting camera access.');
   setStatus('Requesting camera access…', { hidden: false, isError: false });
   startButton.disabled = true;
 
@@ -48,6 +54,7 @@ async function startCamera() {
 
     currentStream = stream;
     video.srcObject = stream;
+    console.log('[cameraEmoji] Camera stream started.');
     stopButton.disabled = false;
   } catch (error) {
     console.error('Unable to start the camera stream.', error);
@@ -66,6 +73,7 @@ async function startCamera() {
 
 function stopCamera() {
   if (!currentStream) {
+    console.log('[cameraEmoji] stopCamera called but no active stream.');
     return;
   }
 
@@ -78,21 +86,26 @@ function stopCamera() {
     isError: false
   });
 
+  console.log('[cameraEmoji] Camera stream stopped.');
   stopButton.disabled = true;
   startButton.disabled = false;
 }
 
 video.addEventListener('playing', () => {
+  console.log('[cameraEmoji] Video element is playing.');
   setStatus('', { hidden: true });
 });
 
 startButton.addEventListener('click', () => {
+  console.log('[cameraEmoji] Start button clicked.');
   startCamera();
 });
 
 stopButton.addEventListener('click', () => {
+  console.log('[cameraEmoji] Stop button clicked.');
   stopCamera();
 });
 
 // Attempt to start the camera automatically on load.
+console.log('[cameraEmoji] Auto-starting camera.');
 startCamera();
