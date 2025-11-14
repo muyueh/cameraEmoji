@@ -83,6 +83,23 @@ video {
   padding: 1rem;
 }
 
+.emoji {
+  position: absolute;
+  top: 1.25rem;
+  left: 50%;
+  transform: translate(-50%, -10px);
+  opacity: 0;
+  font-size: clamp(3rem, 12vw, 6rem);
+  filter: drop-shadow(0 10px 15px rgba(15, 23, 42, 0.35));
+  pointer-events: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.emoji.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
 .status.error {
   background: rgba(220, 38, 38, 0.9);
 }

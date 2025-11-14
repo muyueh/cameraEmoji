@@ -1,0 +1,4 @@
+# Ignore optional face-api.js bundles and model weights.
+vendor/face-api/face-api.min.js
+vendor/face-api/models/*
+!vendor/face-api/models/README.md
