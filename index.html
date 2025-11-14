@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Camera Emoji - Webcam Preview</title>
+    <title>Camera Emoji - Emotion Preview</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +15,7 @@
   <body>
     <header>
       <h1>Camera Emoji</h1>
-      <p>First step: make sure your webcam stream works reliably.</p>
+      <p>See a live preview and get a quick read on your facial expression.</p>
     </header>
 
     <main>
@@ -23,6 +23,12 @@
         <div class="video-wrapper">
           <video id="video" autoplay playsinline muted></video>
           <div id="status" class="status">Requesting camera access…</div>
+          <div class="emotion-pill" id="emotionPill" aria-live="polite">
+            <span id="emotionEmoji" class="emotion-emoji" role="img" aria-hidden="true"
+              >😊</span
+            >
+            <span id="emotionLabel" class="emotion-label">Waiting for face…</span>
+          </div>
         </div>
         <div class="controls">
           <button id="startButton" type="button">Start camera</button>
@@ -31,16 +37,16 @@
       </section>
 
       <section class="instructions">
-        <h2>Using the preview</h2>
+        <h2>Using the emotion preview</h2>
         <ol>
           <li>Grant the browser permission to use your webcam.</li>
           <li>
-            If the preview freezes or you revoke access, use the buttons above to
-            restart the stream.
+            Keep your face within the frame. When the model finds you, the label
+            updates to the most confident expression.
           </li>
           <li>
-            Once the camera feed is working, we can layer facial expression
-            features on top in the future.
+            Lighting and positioning matter. If the label feels off, try moving
+            closer or adjusting the light.
           </li>
         </ol>
       </section>
@@ -50,6 +56,12 @@
       <p>Need help? Check your browser settings for camera permissions.</p>
     </footer>
 
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"
+      integrity="sha384-gzn2n++arkvyhdNLmUf1s6F5NZ8iAbZ7FhIt+Zw7Jlf1n/vNTmZ3+cYr7S4ogyco"
+      crossorigin="anonymous"
+    ></script>
     <script type="module" src="script.js"></script>
   </body>
 </html>
