@@ -12,8 +12,10 @@ let detectionFrameId = null;
 let modelsLoaded = false;
 let modelsLoadingPromise = null;
 
-const MODEL_CDN_BASE =
-  'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights';
+const MODEL_SOURCES = [
+  'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights'
+];
+let activeModelSource = null;
 
 const EXPRESSION_EMOJI = {
   neutral: '😐',
@@ -79,16 +81,39 @@ function ensureFaceApiAvailable() {
   return true;
 }
 
+async function loadModelsFromSource(baseUri) {
+  console.info('[cameraEmoji] Loading face-api models from', baseUri);
+  await Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri(baseUri),
+    faceapi.nets.faceExpressionNet.loadFromUri(baseUri)
+  ]);
+  activeModelSource = baseUri;
+}
+
 async function loadModels() {
   if (modelsLoaded) {
     return;
   }
 
   if (!modelsLoadingPromise) {
-    modelsLoadingPromise = Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_CDN_BASE),
-      faceapi.nets.faceExpressionNet.loadFromUri(MODEL_CDN_BASE)
-    ]);
+    modelsLoadingPromise = (async () => {
+      let lastError;
+      for (const source of MODEL_SOURCES) {
+        try {
+          await loadModelsFromSource(source);
+          return;
+        } catch (error) {
+          console.warn(
+            '[cameraEmoji] Failed to load face-api models from CDN.',
+            source,
+            error
+          );
+          lastError = error;
+        }
+      }
+
+      throw lastError ?? new Error('No model sources could be loaded.');
+    })();
   }
 
   await modelsLoadingPromise;
@@ -178,6 +203,9 @@ async function startEmotionDetection() {
 
   try {
     await loadModels();
+    if (activeModelSource) {
+      console.info('[cameraEmoji] Using face-api models from', activeModelSource);
+    }
     setStatus('', { hidden: true });
     scheduleNextDetectionFrame();
   } catch (error) {
